@@ -1,7 +1,4 @@
 #include <stdlib.h>
-#include <unistd.h>
-#include "get_next_line.h"
-
 
 int	ft_strlen(const char *s)
 {
@@ -74,26 +71,4 @@ char	*ft_strdup(const char *s1)
 	}
 	s2[i] = '\0';
 	return (s2);
-}
-
-
-char *get_next_line(int fd)
-{
-	static char *stash;
-	char *buffer;
-	char *line;
-	ssize_t bytes_read;
-
-	line = NULL;
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return NULL;
-	while (!ft_strchr(buffer,'\n') && (bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
-	{
-		buffer[bytes_read] = '\0';
-		stash = ft_strjoin_free(stash, buffer);
-	}
-	line = extract_line(&stash);
-	free(buffer);
-	return line;
 }
