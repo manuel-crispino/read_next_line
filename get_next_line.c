@@ -21,6 +21,20 @@ static void	helper(char **stash, size_t line_len)
 	}
 }
 
+static int	stash_check(char **stash)
+{
+	if (!stash || !*stash || (*stash)[0] == '\0')
+	{
+		if (*stash)
+		{
+			free(*stash);
+			*stash = NULL;
+		}
+		return (0);
+	}
+	return (1);
+}
+
 static char	*extract_line(char **stash)
 {
 	size_t	line_len;
@@ -29,7 +43,7 @@ static char	*extract_line(char **stash)
 
 	line_len = 0;
 	i = 0;
-	if (!*stash || **stash == '\0')
+	if (!stash_check(stash))
 		return (NULL);
 	while ((*stash)[line_len] && (*stash)[line_len] != '\n')
 		line_len++;
@@ -59,16 +73,15 @@ char	*get_next_line(int fd)
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	while (bytes_read > 0)
+	while (1)
 	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
+			break ;
 		buffer[bytes_read] = '\0';
 		stash = ft_strjoin_free(stash, buffer);
 		if (!stash)
-		{
-			free(buffer);
-			return (NULL);
-		}
+			break ;
 		if (ft_strchr(stash, '\n'))
 			break ;
 	}
