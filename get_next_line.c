@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "get_next_line.h"
+#include <fcntl.h>
+#include <stdio.h>
+
 
 static void	helper(char **stash, size_t line_len)
 {
@@ -87,4 +90,17 @@ char	*get_next_line(int fd)
 	}
 	free(buffer);
 	return (extract_line(&stash));
+}
+
+int main (void){
+	int file = open("test.txt",O_RDONLY); 
+	char * line= get_next_line(file);
+	while(line != NULL)
+	{
+		line= get_next_line(file);
+		printf("%s",line);
+		free(line);
+	}
+	close(file);
+	return 0;
 }
